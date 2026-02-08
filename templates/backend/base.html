@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <title>{{ title|default:"HOC Backend" }}</title>
+  <link rel="apple-touch-icon" href="{% static 'stack-admin/app-assets/images/ico/apple-icon-120.png' %}">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'stack-admin/app-assets/images/ico/favicon.ico' %}">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600|Open+Sans:300,400,600,700" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/vendors/css/vendors.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/bootstrap.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/bootstrap-extended.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/colors.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/components.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/core/menu/menu-types/vertical-menu-modern.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/core/colors/palette-gradient.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'stack-admin/assets/css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+  <style>
+    .hoc-brand { font-weight: 700; font-size: 1.2rem; letter-spacing: .02em; color: #fff; }
+    .hoc-content-wrap { padding-top: 5.5rem; min-height: calc(100vh - 56px); }
+    .hoc-actions a { margin-right: .5rem; }
+    .hoc-table td,.hoc-table th { vertical-align: middle; }
+    .hoc-table thead th { font-weight: 700; text-transform: uppercase; font-size: .82rem; }
+    .form-control, .custom-select { min-height: 42px; }
+    .card { border-radius: .6rem; }
+    .btn { border-radius: .35rem; font-weight: 600; }
+    .navigation .menu-content > li > a { font-size: .9rem; }
+    .navigation .menu-title { font-size: .92rem; }
+    .content-header-title { font-weight: 700; }
+    .alert { border-radius: .45rem; }
+    .navbar-header { background: #2f3f60; }
+    .navbar-header .brand-text { line-height: 1; }
+    .navbar-semi-light .navbar-nav .nav-link { color: #4e5d78; }
+    .navbar-semi-light .navbar-nav .nav-link .feather { color: #4e5d78; }
+    .main-menu.menu-dark { background: #344563; }
+    .main-menu.menu-dark .navigation .navigation-header span { color: #d7dce7; letter-spacing: .04em; }
+    .main-menu.menu-dark .navigation > li > a { color: #e8edf7; }
+    .main-menu.menu-dark .navigation > li.open > a,
+    .main-menu.menu-dark .navigation > li.active > a { background: rgba(8, 189, 189, .25); }
+    .main-menu.menu-dark .navigation li a i { color: #d4def1; }
+    .hoc-top-badge { font-size: .65rem; padding: .22rem .35rem; min-width: 1.1rem; }
+    .btn-form-action {
+      min-height: 38px;
+      padding: .45rem .9rem;
+      font-size: .9rem;
+      font-weight: 600;
+      line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-form-main {
+      min-height: 42px;
+      padding: .55rem 1rem;
+      font-size: .95rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body class="vertical-layout vertical-menu-modern 2-columns fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+  <nav class="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-semi-light">
+    <div class="navbar-wrapper">
+      <div class="navbar-header">
+        <ul class="nav navbar-nav flex-row">
+          <li class="nav-item mobile-menu d-md-none mr-auto">
+            <a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu font-large-1"></i></a>
+          </li>
+          <li class="nav-item mr-auto">
+            <a class="navbar-brand" href="/backend/">
+              <img class="brand-logo" alt="stack logo" src="{% static 'stack-admin/app-assets/images/logo/stack-logo-light.png' %}">
+              <h2 class="brand-text hoc-brand mb-0">Stack</h2>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block nav-toggle">
+            <a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse"><i class="toggle-icon feather icon-toggle-right font-medium-3 white"></i></a>
+          </li>
+          <li class="nav-item d-md-none">
+            <a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="fa fa-ellipsis-v"></i></a>
+          </li>
+        </ul>
+      </div>
+      <div class="navbar-container content">
+        <div class="collapse navbar-collapse" id="navbar-mobile">
+          <ul class="nav navbar-nav mr-auto float-left">
+            <li class="dropdown nav-item d-none d-md-block">
+              <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">Mega</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="/backend/">Dashboard</a>
+                <a class="dropdown-item" href="/reports/">Reports</a>
+              </div>
+            </li>
+            <li class="nav-item d-none d-md-block"><a class="nav-link nav-link-expand" href="#"><i class="ficon feather icon-maximize"></i></a></li>
+            <li class="nav-item nav-search"><a class="nav-link nav-link-search" href="#"><i class="ficon feather icon-search"></i></a></li>
+          </ul>
+          <ul class="nav navbar-nav float-right">
+            <li class="dropdown dropdown-language nav-item">
+              <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"><i class="flag-icon flag-icon-us"></i></a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#">English</a>
+                <a class="dropdown-item" href="#">Arabic</a>
+              </div>
+            </li>
+            <li class="dropdown dropdown-notification nav-item">
+              <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-bell"></i><span class="badge badge-pill badge-danger badge-up hoc-top-badge">5</span></a>
+            </li>
+            <li class="dropdown dropdown-notification nav-item">
+              <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon feather icon-mail"></i><span class="badge badge-pill badge-warning badge-up hoc-top-badge">3</span></a>
+            </li>
+            <li class="dropdown dropdown-user nav-item">
+              <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                <span class="avatar avatar-online"><img src="{% static 'stack-admin/app-assets/images/portrait/small/avatar-s-1.png' %}" alt="avatar"><i></i></span>
+                <span class="user-name">John Doe</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="/admin/"><i class="feather icon-settings"></i> Admin</a>
+                <a class="dropdown-item" href="/admin/logout/"><i class="feather icon-power"></i> Logout</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
+    <div class="main-menu-content">
+      <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+        {% for group in module_groups %}
+          <li class=" navigation-header">
+            <span>{{ group.title }}</span>
+            <i class=" feather icon-minus" data-toggle="tooltip" data-placement="right"></i>
+          </li>
+          {% for item in group.items %}
+            {% if item.children %}
+              <li class=" nav-item has-sub">
+                <a href="{{ item.url|default:'#' }}"><i class="{{ item.icon|default:'feather icon-circle' }}"></i><span class="menu-title">{{ item.title }}</span></a>
+                <ul class="menu-content">
+                  {% for child in item.children %}
+                    <li>
+                      <a class="menu-item" href="{{ child.url }}"><i class="{{ child.icon|default:'feather icon-file-text' }}"></i>{{ child.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% else %}
+              <li class=" nav-item">
+                <a href="{{ item.url }}"><i class="{{ item.icon|default:'feather icon-circle' }}"></i><span class="menu-title">{{ item.title }}</span></a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="app-content content hoc-content-wrap">
+    <div class="content-wrapper">
+      <div class="content-header row">
+        <div class="content-header-left col-md-12 col-12 mb-1">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="content-body">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer footer-static footer-light navbar-border">
+    <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+      <span class="float-md-left d-block d-md-inline-block">Copyright &copy; 2026 <a class="text-bold-800 grey darken-2" href="#">Heart of Chocolate</a></span>
+      <span class="float-md-right d-none d-lg-block">Hand-crafted &amp; Made with <i class="feather icon-heart pink"></i></span>
+    </p>
+  </footer>
+
+  <script src="{% static 'stack-admin/app-assets/vendors/js/vendors.min.js' %}"></script>
+  <script src="{% static 'stack-admin/app-assets/js/core/app-menu.js' %}"></script>
+  <script src="{% static 'stack-admin/app-assets/js/core/app.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

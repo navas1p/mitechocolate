@@ -1,0 +1,50 @@
+{% extends "backend/base.html" %}
+{% block content %}
+<div class="top"><h1>Production Entry</h1></div>
+<div class="panel">
+  <form method="post">
+    {% csrf_token %}
+    <div class="row">
+      {% for field in form %}
+      <div>
+        <label>{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+      {% endfor %}
+    </div>
+    <button class="btn" type="submit">Save Production</button>
+  </form>
+</div>
+<div class="panel">
+  <h2>Recent Production</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Item</th>
+        <th>Batch</th>
+        <th>Qty</th>
+        <th>Unit</th>
+        <th>Stock Qty</th>
+        <th>Expiry</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.production_date }}</td>
+        <td>{{ row.product.name }}</td>
+        <td>{{ row.batch_number }}</td>
+        <td>{{ row.quantity }}</td>
+        <td>{{ row.unit }}</td>
+        <td>{{ row.stock_quantity }}</td>
+        <td>{{ row.expiry_date }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7">No records.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

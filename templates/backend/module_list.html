@@ -1,0 +1,44 @@
+{% extends "backend/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">{{ module.title }}</h4>
+  {% if module.slug != "business-profile" %}
+    <a class="btn btn-primary" href="{% url 'backend_module_create' module.slug %}">ADD</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-body">
+  <h5 class="card-title">Recent {{ module.title }}</h5>
+  <div class="table-responsive">
+  <table class="table hoc-table">
+    <thead>
+      <tr>
+        {% for col in list_display %}
+          <th>{{ col|title }}</th>
+        {% endfor %}
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in table_rows %}
+      <tr>
+        {% for value in row.values %}
+          <td>{{ value }}</td>
+        {% endfor %}
+        <td class="hoc-actions">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'backend_module_edit' module.slug row.obj.pk %}">Edit</a>
+          {% if module.slug != "business-profile" %}
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'backend_module_delete' module.slug row.obj.pk %}">Delete</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ list_display|length|add:1 }}">No records found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+</div>
+{% endblock %}

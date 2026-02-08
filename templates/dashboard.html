@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chocolate ERP - Dashboard</title>
+  <style>
+    :root {
+      --ink: #2b2a28;
+      --cream: #f7f0e8;
+      --cocoa: #5c3b2e;
+      --gold: #caa36a;
+    }
+    body {
+      margin: 0;
+      font-family: "Georgia", "Times New Roman", serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, #fff6e8, var(--cream));
+    }
+    header {
+      padding: 24px;
+      background: linear-gradient(120deg, var(--cocoa), #3c251c);
+      color: #fff;
+    }
+    main {
+      padding: 24px;
+      display: block;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e8dfd2;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #806d5a;
+    }
+    .value {
+      font-size: 32px;
+      font-weight: 600;
+      margin-top: 8px;
+      color: var(--cocoa);
+    }
+    .section {
+      margin-top: 24px;
+      background: #fff;
+      border: 1px solid #e8dfd2;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #eee4d6;
+      text-align: left;
+    }
+    th {
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 12px;
+      color: #806d5a;
+    }
+    .right {
+      text-align: right;
+    }
+    .links {
+      margin: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .link {
+      text-decoration: none;
+      color: #3c251c;
+      background: var(--gold);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Heart of Chocolate - Dashboard</h1>
+    <p>Quick overview of core activity.</p>
+  </header>
+  <main>
+    <div class="cards">
+      <div class="card">
+        <div class="label">Customers</div>
+        <div class="value">{{ customer_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Sales Orders</div>
+        <div class="value">{{ order_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Sales</div>
+        <div class="value">{{ sale_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Receipts</div>
+        <div class="value">{{ total_receipts }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Products</div>
+        <div class="value">{{ product_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Purchases</div>
+        <div class="value">{{ purchase_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Production</div>
+        <div class="value">{{ production_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Stock Alerts</div>
+        <div class="value">{{ low_stock_count }} / {{ out_of_stock_count }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Sales Value</div>
+        <div class="value">{{ sales_value|floatformat:2 }}</div>
+      </div>
+      <div class="card">
+        <div class="label">Stock Value</div>
+        <div class="value">{{ stock_value|floatformat:2 }}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Latest Orders</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Customer</th>
+            <th>Type</th>
+            <th>Delivery</th>
+            <th class="right">Net Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in latest_orders %}
+            <tr>
+              <td>{{ order.order_number }}</td>
+              <td>{{ order.customer.name }}</td>
+              <td>{{ order.get_order_type_display }}</td>
+              <td>{{ order.get_delivery_mode_display }}</td>
+              <td class="right">{{ order.net_price|floatformat:2 }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">No orders yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Low Stock Products</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th class="right">Current Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in low_stock_products %}
+            <tr>
+              <td>{{ product.name }}</td>
+              <td class="right">{{ product.current_stock|floatformat:3 }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">No stock alerts.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <div class="links">
+    <a class="link" href="/admin/">Admin</a>
+    <a class="link" href="/backend/">Backend</a>
+    <a class="link" href="/api/">API</a>
+  </div>
+</body>
+</html>

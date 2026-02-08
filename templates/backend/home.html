@@ -1,0 +1,259 @@
+{% extends "backend/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/fonts/simple-line-icons/style.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'stack-admin/app-assets/css/pages/card-statistics.css' %}">
+<style>
+  .dashboard-metric .media-body h3 { font-weight: 700; margin-bottom: .2rem; }
+  .dashboard-metric .media-body span { color: #6b6f82; }
+  .kpi-box { background: #f8f8f8; border-radius: .35rem; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; }
+  .kpi-box i { font-size: 1.7rem; }
+  .tiny-muted { font-size: .8rem; color: #a5a8b1; }
+  #sales-weekly-chart, #monthly-sales-chart, #stock-ring-chart { min-height: 280px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12 mb-1">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Dashboard</h4>
+      <a class="btn btn-outline-primary" href="/api/">API Browser</a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xl-3 col-md-6 col-12">
+    <div class="card pull-up dashboard-metric">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3>{{ receipt_value|floatformat:0 }}</h3>
+              <span>Revenue</span>
+              <div class="tiny-muted mt-50">Receipts</div>
+            </div>
+            <div class="align-self-center">
+              <div class="kpi-box"><i class="icon-graph text-info"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 col-12">
+    <div class="card pull-up dashboard-metric">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3>{{ low_stock_count }}</h3>
+              <span>Stock Alerts</span>
+              <div class="tiny-muted mt-50">{{ out_of_stock_count }} out of stock</div>
+            </div>
+            <div class="align-self-center">
+              <div class="kpi-box"><i class="icon-pie-chart text-danger"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 col-12">
+    <div class="card pull-up dashboard-metric">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3>{{ sales_value|floatformat:0 }}</h3>
+              <span>Sales</span>
+              <div class="tiny-muted mt-50">This month: {{ this_month_sales_value|floatformat:0 }}</div>
+            </div>
+            <div class="align-self-center">
+              <div class="kpi-box"><i class="icon-basket-loaded text-success"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 col-12">
+    <div class="card pull-up dashboard-metric">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3>{{ order_count }}</h3>
+              <span>Orders</span>
+              <div class="tiny-muted mt-50">This month: {{ this_month_orders }}</div>
+            </div>
+            <div class="align-self-center">
+              <div class="kpi-box"><i class="icon-handbag text-warning"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row match-height">
+  <div class="col-xl-7 col-lg-12">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h4 class="card-title mb-0">Sales Trend (Last 7 Days)</h4>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body pt-0">
+          <div id="sales-weekly-chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-lg-7 col-md-8">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h4 class="card-title mb-0">Monthly Sales</h4>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body pt-0">
+          <div id="monthly-sales-chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-2 col-lg-5 col-md-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h4 class="card-title mb-0">Stock Mix</h4>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body pt-0 text-center">
+          <div id="stock-ring-chart"></div>
+          <div class="row text-center mt-1">
+            <div class="col-12"><h3 class="mb-0">{{ stock_value|floatformat:0 }}</h3><small class="text-muted">Stock Value</small></div>
+            <div class="col-6 mt-1"><h5 class="mb-0">{{ product_count }}</h5><small class="text-muted">Products</small></div>
+            <div class="col-6 mt-1"><h5 class="mb-0">{{ total_stock_units|floatformat:0 }}</h5><small class="text-muted">Units</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row match-height">
+  <div class="col-xl-8 col-lg-12">
+    <div class="card">
+      <div class="card-header border-bottom-0 pb-0">
+        <h4 class="card-title mb-0">Latest Orders</h4>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body pt-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Type</th>
+                  <th>Delivery</th>
+                  <th class="text-right">Net Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in latest_orders %}
+                  <tr>
+                    <td class="text-truncate">{{ order.order_number }}</td>
+                    <td>{{ order.customer.name }}</td>
+                    <td>{{ order.get_order_type_display }}</td>
+                    <td>{{ order.get_delivery_mode_display }}</td>
+                    <td class="text-right">{{ order.net_price|floatformat:2 }}</td>
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="5" class="text-center text-muted">No orders yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-lg-12">
+    <div class="card">
+      <div class="card-header border-bottom-0 pb-0">
+        <h4 class="card-title mb-0">Low Stock Products</h4>
+      </div>
+      <div class="card-content collapse show">
+        <div class="card-body pt-0">
+          <ul class="list-group list-group-flush">
+            {% for product in low_stock_products %}
+              <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                <span>{{ product.name }}</span>
+                <span class="badge {% if product.current_stock <= 0 %}badge-danger{% else %}badge-warning{% endif %} badge-pill">
+                  {{ product.current_stock|floatformat:3 }}
+                </span>
+              </li>
+            {% empty %}
+              <li class="list-group-item px-0 text-muted">No stock alerts.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'stack-admin/app-assets/vendors/js/charts/apexcharts/apexcharts.min.js' %}"></script>
+<script>
+  (function () {
+    var salesWeekLabels = {{ sales_week_labels_json|safe }};
+    var salesWeekValues = {{ sales_week_values_json|safe }};
+    var salesMonthLabels = {{ sales_month_labels_json|safe }};
+    var salesMonthValues = {{ sales_month_values_json|safe }};
+    var stockPieLabels = {{ stock_pie_labels_json|safe }};
+    var stockPieValues = {{ stock_pie_values_json|safe }};
+
+    var weeklyOptions = {
+      chart: { type: "area", height: 300, toolbar: { show: false } },
+      series: [{ name: "Sales", data: salesWeekValues }],
+      xaxis: { categories: salesWeekLabels },
+      stroke: { curve: "smooth", width: 3 },
+      dataLabels: { enabled: false },
+      colors: ["#00b5b8"],
+      fill: { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 } },
+      yaxis: { labels: { formatter: function (v) { return v.toFixed(0); } } },
+      grid: { borderColor: "#f0f0f0" }
+    };
+    new ApexCharts(document.querySelector("#sales-weekly-chart"), weeklyOptions).render();
+
+    var monthlyOptions = {
+      chart: { type: "bar", height: 300, toolbar: { show: false } },
+      series: [{ name: "Sales", data: salesMonthValues }],
+      xaxis: { categories: salesMonthLabels },
+      dataLabels: { enabled: false },
+      colors: ["#ff9149"],
+      plotOptions: { bar: { columnWidth: "45%", borderRadius: 2 } },
+      grid: { borderColor: "#f0f0f0" }
+    };
+    new ApexCharts(document.querySelector("#monthly-sales-chart"), monthlyOptions).render();
+
+    var stockOptions = {
+      chart: { type: "donut", height: 280 },
+      series: stockPieValues,
+      labels: stockPieLabels,
+      dataLabels: { enabled: false },
+      legend: { show: true, position: "bottom" },
+      colors: ["#16d39a", "#ff7588", "#ff9149"]
+    };
+    new ApexCharts(document.querySelector("#stock-ring-chart"), stockOptions).render();
+  })();
+</script>
+{% endblock %}

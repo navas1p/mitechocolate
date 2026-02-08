@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reports</title>
+  <style>
+    body { font-family: "Georgia", "Times New Roman", serif; padding: 24px; }
+    .card { padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; }
+    a { text-decoration: none; color: #3c251c; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Reports</h1>
+  <p>Select a report:</p>
+  {% for slug, name in reports %}
+    <div class="card">
+      <a href="/reports/{{ slug }}/">{{ name }}</a>
+    </div>
+  {% endfor %}
+</body>
+</html>

@@ -1,0 +1,87 @@
+{% extends "backend/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">{% if is_create %}Add Purchase{% else %}Edit Purchase{% endif %}</h4>
+  <a class="btn btn-outline-secondary" href="{% url 'backend_module_list' 'purchases' %}">Back To List</a>
+</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        {% for field in purchase_form %}
+        <div class="col-md-4">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {{ field.errors }}
+        </div>
+        {% endfor %}
+      </div>
+
+      <h5 class="mt-3">Items</h5>
+      {{ item_formset.management_form }}
+      <div class="table-responsive">
+        <table class="table hoc-table" id="items-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Unit</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Tax %</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for form in item_formset %}
+            <tr class="item-row">
+              <td>{{ form.product }}{{ form.product.errors }}</td>
+              <td>{{ form.unit }}{{ form.unit.errors }}</td>
+              <td>{{ form.quantity }}{{ form.quantity.errors }}</td>
+              <td>{{ form.unit_price }}{{ form.unit_price.errors }}</td>
+              <td>{{ form.tax_percentage }}{{ form.tax_percentage.errors }}</td>
+              <td>{{ form.DELETE }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;">
+        <button type="button" class="btn btn-outline-primary" id="add-row">Add Item</button>
+        <button type="submit" class="btn btn-primary">{% if is_create %}Save{% else %}Update{% endif %} Purchase</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const addBtn = document.getElementById("add-row");
+    const tableBody = document.querySelector("#items-table tbody");
+    const totalForms = document.getElementById("id_items-TOTAL_FORMS");
+
+    if (!addBtn || !tableBody || !totalForms) return;
+
+    addBtn.addEventListener("click", function () {
+      const rows = tableBody.querySelectorAll("tr");
+      if (!rows.length) return;
+      const last = rows[rows.length - 1];
+      const clone = last.cloneNode(true);
+      const index = parseInt(totalForms.value, 10);
+
+      clone.querySelectorAll("input, select").forEach(function (el) {
+        if (el.name) el.name = el.name.replace(/items-\\d+-/g, "items-" + index + "-");
+        if (el.id) el.id = el.id.replace(/id_items-\\d+-/g, "id_items-" + index + "-");
+        if (el.type === "checkbox") {
+          el.checked = false;
+        } else {
+          el.value = "";
+        }
+      });
+      clone.querySelectorAll(".errorlist").forEach(function (node) { node.remove(); });
+      tableBody.appendChild(clone);
+      totalForms.value = index + 1;
+    });
+  })();
+</script>
+{% endblock %}
