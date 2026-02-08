@@ -2,11 +2,10 @@ services:
   - type: web
     name: mitechocolate-web
     runtime: python
+    plan: free
     buildCommand: "bash build.sh"
     startCommand: "gunicorn hoc.wsgi:application"
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.12.3
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
@@ -22,5 +21,6 @@ services:
 
 databases:
   - name: mitechocolate-db
+    plan: free
     databaseName: mitechocolate
     user: mitechocolate_user
