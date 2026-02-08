@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: mitechocolate-web
+    runtime: python
+    buildCommand: "bash build.sh"
+    startCommand: "gunicorn hoc.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "mitechocolate-web.onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://mitechocolate-web.onrender.com"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mitechocolate-db
+          property: connectionString
+
+databases:
+  - name: mitechocolate-db
+    databaseName: mitechocolate
+    user: mitechocolate_user

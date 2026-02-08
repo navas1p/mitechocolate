@@ -43,3 +43,15 @@ estimated outstanding).
 ## Reports
 - Reports index: `/reports/`
 - Reports have filters and export buttons (Excel/PDF).
+
+## Deploy Online (Render + PostgreSQL)
+1. Push this repo to GitHub.
+2. In Render, create a **Blueprint** and select this repo.
+3. Render will use `render.yaml` to create:
+   - Web service (`mitechocolate-web`)
+   - PostgreSQL database (`mitechocolate-db`)
+4. After deploy finishes, create admin user from Render Shell:
+   ```bash
+   python manage.py createsuperuser
+   ```
+5. Open your Render URL and log in.
